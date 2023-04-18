@@ -8,7 +8,7 @@ import cfg
 
 
 # TurnLLY Version
-VERSION = '3.2.0'
+VERSION = '3.2.1'
 
 # Emoji
 class ICONS:
@@ -138,15 +138,12 @@ def parseMonth(month: str) -> datetime.datetime:
 ################################### TurnLLY ####################################
 ################################################################################
 
-def shift(daySeconds: int) -> int:
-    for turn, turnLimitSeconds in enumerate([28800, 57600, 86400]):
-        if daySeconds < turnLimitSeconds:
-            return turn
-
 def team(timestamp: datetime.datetime) -> str:
     cycleSeconds = int((timestamp - datetime.datetime(2018, 9, 2, 5, 30, 0)).total_seconds()) % 864000
     daySeconds = cycleSeconds % 86400
-    shiftType = shift(daySeconds)
+    for shiftType, turnLimitSeconds in enumerate([28800, 57600, 86400]):
+        if daySeconds < turnLimitSeconds:
+            break
     dayType = int(cycleSeconds / 172800)
     return [ICONS.BLUE, ICONS.GREEN, ICONS.YELLOW, ICONS.RED, ICONS.PURPLE][(5 - dayType + shiftType) % 5]
 
